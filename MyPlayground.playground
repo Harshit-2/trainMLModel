@@ -1,0 +1,36 @@
+import CreateML
+import Foundation
+
+// Absolute paths to your datasets
+let trainingDataURL = URL(fileURLWithPath: "/Users/userName/Downloads/train")
+let testingDataURL = URL(fileURLWithPath: "/Users/userName/Downloads/test")
+
+do {
+    // Load and split the data
+    print("Loading training data...")
+    let trainingData = try MLImageClassifier.DataSource.labeledDirectories(at: trainingDataURL)
+    print("Training data loaded successfully!")
+
+    print("Loading testing data...")
+    let testingData = try MLImageClassifier.DataSource.labeledDirectories(at: testingDataURL)
+    print("Testing data loaded successfully!")
+
+    // Train the model
+    print("Training the model...")
+    let model = try MLImageClassifier(trainingData: trainingData)
+    print("Model training completed!")
+
+    // Evaluate the model
+    print("Evaluating the model on testing data...")
+    let evaluation = model.evaluation(on: testingData)
+    print("Evaluation metrics: \(evaluation)")
+
+    // Save the model
+    print("Saving the model...")
+    let saveURL = URL(fileURLWithPath: "/Users/userName/Downloads/MyImageClassifier.mlmodel")
+    try model.write(to: saveURL)
+    print("Model saved to: \(saveURL.path)")
+
+} catch {
+    print("An error occurred: \(error)")
+}
